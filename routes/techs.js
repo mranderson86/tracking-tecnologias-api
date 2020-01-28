@@ -1,22 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const Tecnologia = require('../models/techs');
+const TechController = require('../controller/techs');
 
-router.get('/', async function index(req, res) {
-  const tecnologias = await Tecnologia.find();
+router.get('/techs/:id', TechController.index);
 
-  return res.json(tecnologias);
-});
+router.get('/techs', TechController.all);
 
-router.post('/', async function store(req, res) {
-  const {techname} = req.body;
-
-  tecnologia = await Tecnologia.create({
-    techname
-  });
-
-  return res.json(tecnologia);
-});
+router.post('/techs', TechController.create);
 
 module.exports = router;

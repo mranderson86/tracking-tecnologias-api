@@ -6,8 +6,8 @@ module.exports = {
 
     // consulta dados de um único usuário
     async index(request , response ) {
-
-        const { id } = request.query;
+        
+        const { id } = request.params;
         
         const user = await UserService.index(id);
 
@@ -57,7 +57,11 @@ module.exports = {
 
     async delete( request , response ) {
 
-        const { id } = request.query;
+        const { id } = request.params;
+
+        const user = await UserService.delete(id);
+
+        return response.status(200).json(user);
 
     }
 
