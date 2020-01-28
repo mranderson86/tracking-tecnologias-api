@@ -59,6 +59,11 @@ module.exports = {
 
         const { id } = request.query;
 
+        const resp = await UserService.delete(id);
+
+        console.log(resp);
+
+        return response.status(200).json({ message : 'Usuário excluído com sucesso' })
     }
 
 

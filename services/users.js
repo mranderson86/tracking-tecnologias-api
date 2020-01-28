@@ -60,8 +60,6 @@ module.exports = {
 
         // cria o hash da senha
         
-
-
         // Inclui um novo usuário
         const user = await UserModel.create({
             nome,
@@ -74,5 +72,18 @@ module.exports = {
         return user;
 
     },
+
+
+    // exclui um usuário
+    async delete( id ) {
+
+       const resp = await UserModel.deleteOne({ _id : id }, err => {  
+            if(err){
+                console.log(err);
+            }
+        });
+
+        return resp;
+    }
 
 }
