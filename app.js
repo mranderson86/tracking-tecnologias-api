@@ -33,7 +33,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/usuarios', usersRouter);
+app.use(usersRouter);
 app.use('/tecnologias', techsRouter);
 app.use('/historico', historicoRouter);
 
