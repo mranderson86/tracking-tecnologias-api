@@ -4,22 +4,25 @@ const UserService = require('../services/users');
 
 module.exports = {
 
+    // consulta dados de um único usuário
     async index(request , response ) {
+
+        const { id } = request.query;
         
-        return res.status(200).json({ message : 'Only User' });
+        const user = await UserService.index(id);
+
+        return response.status(200).json(user);
     },
 
+    // retorna todos os usuários cadastrados
     async all(request , response ) {
 
-        //const usuarios = await Usuario.find();
+        const users = await UserService.all();
 
-        //return res.json(usuarios);
-
-        return response.status(200).json({ message : 'All users' });
-
-        //return res.status(200).json({ message : 'Hello World' });
+        return response.status(200).json(users);
     },
 
+    // autentica usuário e gera um token de autenticação
     async authenticate( request , response ) {
 
         const { username, password } = request.body;
@@ -27,8 +30,8 @@ module.exports = {
         newUser = await UserService.authenticate( username, password);
 
         // ocorreu algum erro ao criar usuário 
-        if(newUser === undefined) {
-            return response.statusCode(401).json({ message: 'Erro ao autenticar usuário' });
+        if(newUser === null) {
+            return response.status(401).json({ message: 'Erro ao autenticar usuário' });
         }
 
         return response.status(200).json(newUser);
@@ -39,12 +42,12 @@ module.exports = {
 
         const { nome, sobrenome, senha, email, avatarURL } = request.body;
 
-        newUser = await UserService.create(
+        const newUser = await UserService.create(
             nome, sobrenome, senha, email, avatarURL
         )
 
         // ocorreu algum erro ao criar usuário 
-        if(newUser === undefined) {
+        if(newUser === null) {
             return response.statusCode(400).json({ message: 'Erro ao criar usuário' })
         }
 
@@ -54,7 +57,7 @@ module.exports = {
 
     async delete( request , response ) {
 
-        const { id } = request.params;
+        const { id } = request.query;
 
     }
 
