@@ -7,11 +7,12 @@ module.exports = {
 
     async index( id ) {
 
+
         const user = await UserModel.findById( id , (err,res) => {
             if(err){
                 console.log(err);
             }
-        })
+        });
         
         return user;
     },
@@ -74,5 +75,16 @@ module.exports = {
         return user;
 
     },
+
+    // Remove um usuário
+    async delete( id ) {
+        const user = await UserModel.findByIdAndDelete( id , (err,res) => {
+            if(err){
+                console.log(err);
+            }
+        });
+        
+        return `user ${id} removed`;
+    }
 
 }
