@@ -14,14 +14,23 @@ module.exports = {
         }
         
         return response.status(200).json(newCheckin);
-    }, 
+    },
+    
+    async all( request, response ) {
+
+        const allCheck = await checkinService.all();
+
+
+        return response.status(200).json(allCheck);
+    },
 
     // consulta check-ins por tecnologia
     async usersByTech () {
 
     },
 
-    // consulta check-ins por usuário
+    // consulta o total de check-ins por usuário
+    // agrupando por tecnologia
     async techByUsers () {
 
     },

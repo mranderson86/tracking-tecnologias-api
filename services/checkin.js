@@ -15,6 +15,14 @@ module.exports = {
 
     },
 
+    // Devolve todos os check-ins cadastrados
+    async all() {
+
+        const allCheckins = await CheckinModel.find();
+
+        return allCheckins;
+    },
+
     // consulta check-ins por tecnologia
     async usersByTech () {
 
