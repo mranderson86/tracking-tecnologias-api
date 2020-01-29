@@ -6,12 +6,16 @@ module.exports = {
 
     // consulta dados de uma única tecnologia
     async index(request , response ) {
-        
-        const { id } = request.params;
-        
-        const tech = await TechService.index(id);
+    
+        try{
 
-        return response.status(200).json(tech);
+            const { id } = request.query;
+            const tech = await TechService.index(id);
+
+            return response.status(200).json(tech);
+        }catch(err){
+            return response.status(400).json(err);
+        }
     },
 
     // retorna todas as tecnologias cadastradas
