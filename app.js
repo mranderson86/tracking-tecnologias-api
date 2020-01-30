@@ -7,9 +7,6 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/usuarios');
-const techsRouter = require('./routes/techs');
-const checkinRouter = require('./routes/checkin');
 
 const app = express();
 const mongodb = 'mongodb+srv://mentoria-2020:KGlRGq3kVlQ8oEIY@cluster0-sammj.mongodb.net/tracking-tecnologias?retryWrites=true&w=majority'
@@ -33,10 +30,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use(usersRouter);
-app.use(techsRouter);
-app.use(checkinRouter);
+// Rota Raiz "/"
+app.use(indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

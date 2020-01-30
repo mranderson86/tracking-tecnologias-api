@@ -10,7 +10,7 @@ module.exports = {
     // consulta dados de um único usuário
     async index(request , response ) {
         
-        const { id } = request.params;
+        const { id } = request.query;
         
         const user = await UserService.index(id);
 

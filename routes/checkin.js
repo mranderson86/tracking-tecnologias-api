@@ -4,6 +4,12 @@ const router = express.Router();
 
 const checkinController = require('../controller/checkin');
 
+// controle de autorização
+const authController = require('../controller/auth');
+
+// Rotas privadas
+router.use(authController);
+
 // Rota de cadastro de check-ins
 router.post('/checkin/register', checkinController.create);
 

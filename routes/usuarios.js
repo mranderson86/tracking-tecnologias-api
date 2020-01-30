@@ -1,20 +1,31 @@
 const express = require('express');
-const router = express.Router();
+
+const routerPrivateUser = express.Router();
+
+const routerPublicUser = express.Router();
 
 const UserController = require('../controller/users');
 
-router.get('/users/:id', UserController.index);
+// controle de autorização
+const authController = require('../controller/auth');
 
-/* GET users listing. */
-router.get('/users', UserController.all );
+// Rotas privadas
+//routerPrivateUser.use(authController);
 
+// Rotas públicas
 // rota de autenticação
-router.post('/users/login', UserController.authenticate );
+routerPublicUser.post('/users/login', UserController.authenticate );
 
 // rota de cadastro de um novo usuário
-router.post('/users/register', UserController.create );
+routerPublicUser.post('/users/register', UserController.create );
+
+// rota de consula de único usuário
+routerPrivateUser.get('/users/:id', UserController.index);
+
+// rota de consulta de usuários
+routerPrivateUser.get('/users', UserController.all );
 
 // rota de exclusão de um novo usuário
-router.delete('/users/:id', UserController.delete );
+routerPrivateUser.delete('/users/:id', UserController.delete );
 
-module.exports = router;
+module.exports = { routerPrivateUser, routerPublicUser };

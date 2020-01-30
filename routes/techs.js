@@ -3,6 +3,12 @@ const router = express.Router();
 
 const TechController = require('../controller/techs');
 
+// controle de autorização
+const authController = require('../controller/auth');
+
+// Rotas privadas
+router.use(authController);
+
 // consulta uma única tecnologia
 router.get('/techs/:id', TechController.index);
 
