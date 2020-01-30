@@ -81,7 +81,7 @@ module.exports = {
             }
         });
         
-        return `user ${id} removed`;
+        return user;
     }
 
 }

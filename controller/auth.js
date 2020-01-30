@@ -7,6 +7,17 @@ module.exports = (request, response, next) => {
     // token de autorização
     const authHeader = request.headers.authorization;
 
+    const urlPublic = request.url;
+
+    // verifica se a rota requisitada é uma rota pública
+    if(/^\/users\/login$/i.test(urlPublic)) {
+        return next();
+    }
+
+    if(/^\/users\/register$/i.test(urlPublic)) {
+        return next();
+    }
+
     // verifica se há um token na requisição
     if(!authHeader) {
         return response.status(401).json({ message: "Token de autorização não encontrado" });
@@ -14,6 +25,7 @@ module.exports = (request, response, next) => {
 
     // Formato do token:  Bearer xxxxxxxxxxxxxxxx.xxxxxxxxxxxx.xxxxxxxxxxxx
     const fullToken = authHeader.split(' ');  
+
     //    [ Format, Key ]
     const [ tokenFormat , tokenKey ] = fullToken;
 
