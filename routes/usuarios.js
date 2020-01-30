@@ -9,10 +9,10 @@ router.get('/users/:id', UserController.index);
 router.get('/users', UserController.all );
 
 // rota de autenticação
-router.post('/users/authenticate', UserController.authenticate );
+router.post('/users/login', UserController.authenticate );
 
 // rota de cadastro de um novo usuário
-router.post('/users', UserController.create );
+router.post('/users/register', UserController.create );
 
 // rota de exclusão de um novo usuário
 router.delete('/users/:id', UserController.delete );
