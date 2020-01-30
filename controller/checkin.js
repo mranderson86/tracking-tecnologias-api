@@ -20,7 +20,6 @@ module.exports = {
 
         const allCheck = await checkinService.all();
 
-
         return response.status(200).json(allCheck);
     },
 
