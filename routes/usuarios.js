@@ -1,27 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
-const Usuario = require('../models/users');
+const UserController = require('../controller/users');
+
+router.get('/users/:id', UserController.index);
 
 /* GET users listing. */
-router.get('/', async function index(req, res) {
-  const usuarios = await Usuario.find();
+router.get('/users', UserController.all );
 
-  return res.json(usuarios);
-});
+// rota de autenticação
+router.post('/users/login', UserController.authenticate );
 
-router.post('/', async function store(req, res) {
-  const { nome, sobrenome, senha, email, avatarURL } = req.body;
+// rota de cadastro de um novo usuário
+router.post('/users/register', UserController.create );
 
-  usuario = await Usuario.create({
-    nome,
-    sobrenome,
-    email,
-    senha,
-    avatarURL
-  });
-
-  return res.json(usuario);
-});
+// rota de exclusão de um novo usuário
+router.delete('/users/:id', UserController.delete );
 
 module.exports = router;
