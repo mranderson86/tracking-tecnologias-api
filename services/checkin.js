@@ -59,7 +59,7 @@ module.exports = {
         return usersTech;
     },
 
-    // consulta check-ins por usuário
+    // consulta check-ins por tecnologica de cada usuário
     async techByUsers () {
 
         let techsUser = [];

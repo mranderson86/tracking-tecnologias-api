@@ -23,7 +23,7 @@ module.exports = {
         return response.status(200).json(allCheck);
     },
 
-    // consulta check-ins por tecnologia
+    // consulta usuários por tecnologia
     async usersByTech (request , response) {
 
         const result = await checkinService.usersByTech();
@@ -31,7 +31,7 @@ module.exports = {
         return response.status(200).json(result);
     },
 
-    // consulta o total de check-ins por usuário
+    // consulta o total de check-ins por tecnlogia de cada usuário
     // agrupando por tecnologia
     async techByUsers ( request  , response ) {
 
