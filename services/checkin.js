@@ -27,7 +27,7 @@ module.exports = {
     },
 
     // Cadastra um ou mais de check-in
-    async create(checkList) {
+    async create(checkList = []) {
 
         const dt = new Date();
         const newDt = new Date(`${dt.getFullYear()}-${dt.getMonth() + 1}-${dt.getDate()}`) ; 
@@ -59,30 +59,50 @@ module.exports = {
                 };
             })
 
-            result = await CheckinModel.create(newListCheckin);
+            if(newListCheckin!= undefined) {
+                if(newListCheckin.length > 0) {
+
+                    result = await CheckinModel.create(newListCheckin);
+
+                }
+            }
 
         } else {
 
             // Percorre a lista de check-ins existente em busca de possível 
             // Duplicidade de check-ins para a mesma tecnologia
-            newListCheckin = queryListCheckin.map(oldCheck => {
+            const newListCheckin = checkList.map(newCheckin => {
                 
                 let hasCheck  = [];
                 // Verifica se houver alguma tecnologia que já foi feito check-in
                 // para aquele usuário na mesma data
-                hasCheck = checkList.filter(newCheckin => 
-                    newCheckin.IdTech == oldCheck.tecnologia);
+                hasCheck = queryListCheckin.filter(oldCheckin => 
+                    newCheckin.IdTech == oldCheckin.tecnologia);
+
+                    console.log(hasCheck);
 
                 // nenhuma tecnologia encontrada
-                if(hasCheck == 0){
+                if(hasCheck.length == 0){
                     // insere o novo check-in de tecnologia
-                    return newCheck;
+                    return { 
+                        usuario: newCheckin.IdUser, 
+                        tecnologia: newCheckin.IdTech, 
+                        data: newDt 
+                    };
                 }
 
             });
 
-            if(newListCheckin != 0)
-                result = await CheckinModel.create(newListCheckin);
+            const newListCheckinFilter = newListCheckin.filter(c => c != undefined);
+
+            if(newListCheckinFilter!= undefined) {
+                if(newListCheckinFilter.length > 0) {
+                    result = await CheckinModel.create(newListCheckinFilter);
+                }
+            }
+
+            
+                
         }
 
         return result;
