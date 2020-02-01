@@ -1,9 +1,14 @@
 
-
-
 const UserModel = require('../models/users');
 
 module.exports = {
+
+    async query ( condition ){
+
+        const result = await UserModel.find(condition).exec();
+
+        return result;
+    },
 
     async index( id ) {
 

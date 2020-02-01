@@ -65,6 +65,15 @@ module.exports = {
 
         const { nome, sobrenome, senha, email, avatarURL } = request.body;
 
+        // consulta se o usuário já existe na base de dados
+        const queryUser = await UserService.query({
+            email: email
+        });
+
+        if(queryUser != null){
+            return response.status(400).json({ message: 'Usuário já cadastrado' });
+        }
+
         // cria o hash da senha
         const passwordHash = await bcrypt.hash(senha, 10);
 
@@ -74,7 +83,7 @@ module.exports = {
 
         // ocorreu algum erro ao criar usuário 
         if(newUser === null) {
-            return response.statusCode(400).json({ message: 'Erro ao criar usuário' })
+            return response.status(400).json({ message: 'Erro ao criar usuário' })
         }
 
         // Evita que a senha seja devolvida para o usuário
