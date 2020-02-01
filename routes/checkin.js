@@ -22,5 +22,8 @@ router.get('/checkin/bytech', checkinController.usersByTech);
 // Consulta todos os check-ins por usuário
 router.get('/checkin/byuser', checkinController.techByUsers);
 
+// Consulta se o usuário já fez check-in
+router.get('./checkin/today', checkinController.checkinToday);
+
 
 module.exports = router;

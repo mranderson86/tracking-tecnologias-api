@@ -15,8 +15,9 @@ const historicoSchema = new Schema(
       required: true
     },
     data : {
-      type: Date,
-      default: Date.now
+      //type: Schema.Types.String
+      type: Date
+      //default: new Date()
     }
   }
 );
