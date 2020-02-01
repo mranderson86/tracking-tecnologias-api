@@ -5,25 +5,25 @@ const UserService = require('../services/users');
 
 module.exports = {
 
-    // função que verifica se o usuário já fez check-in na mesma tecnologia
+    // função que verifica quais tecnologia o usuário já fez check-in
     // no mesmo dia
-    async userCheckToday( checkList ) {
+    async userCheckToday( idUser ) {
 
         const dt = new Date();
         const newDt = new Date(`${dt.getFullYear()}-${dt.getMonth() + 1}-${dt.getDate()}`) ; 
 
         const  query = { 
-            usuario: check.IdUser, 
-            tecnologia: check.IdTech, 
+            usuario: IdUser, 
             data: newDt 
         };
         
-        let queryCounterCheckin = [];
+        let queryCheckin = [];
 
         // Consulta se já não existe um check-in
         // registrado para o usuário e a tecnologia na mesma data
-        queryCounterCheckin = await CheckinModel.find(query).exec();
+        queryCheckin = await CheckinModel.find(query).exec();
 
+        return queryCheckin;
     },
 
     // Cadastra um ou mais de check-in
@@ -79,8 +79,6 @@ module.exports = {
                 hasCheck = queryListCheckin.filter(oldCheckin => 
                     newCheckin.IdTech == oldCheckin.tecnologia);
 
-                    console.log(hasCheck);
-
                 // nenhuma tecnologia encontrada
                 if(hasCheck.length == 0){
                     // insere o novo check-in de tecnologia
@@ -109,15 +107,25 @@ module.exports = {
 
     },
 
-    // Devolve todos os check-ins cadastrados
-    async all() {
+    // devolve todos os check-in de um usuário
+    async byUser( queryCondition = {}) {
 
-        const allCheckins = await CheckinModel.find();
+        let allCheckins;
+        allCheckins = await CheckinModel.find(queryCondition).exec();
 
         return allCheckins;
     },
 
-    // consulta check-ins por tecnologia
+    // Devolve todos os check-ins cadastrados
+    async all() {
+
+        let allCheckins;
+        allCheckins = await CheckinModel.find().exec();
+
+        return allCheckins;
+    },
+
+    // consulta o total check-ins por tecnologia
     async usersByTech () {
 
         let usersTech = [];
@@ -157,7 +165,7 @@ module.exports = {
 
         let techsUser = [];
 
-        // consulta todas as tecnologias cadastradas
+        // consulta todas os usuários cadastrados
         const allUsers = await UserService.all();
 
         // consulta todos os checkins
@@ -190,7 +198,7 @@ module.exports = {
                    CounterCheckin: filterCheckByTech.length
                }
 
-            });
+            }).filter(f => f.CounterCheckin != 0);
                 
             // Devolve lista de usuários com lista de tecnologia 
             // de cada usuário e quantidade de check-ins                
@@ -207,5 +215,164 @@ module.exports = {
         return techsUser;
 
     },
+
+
+    // consulta total de check-ins por tecnologia para um único usuário
+    async techByUser (id) {
+
+        // dados do usuário
+        const userData = await UserService.index(id);
+
+        // consulta todos os checkins
+        const allCheckins = await this.byUser({ usuario: id });
+
+        // consulta todas as tecnlogias
+        const allTechs = await TechService.all();
+
+        let CheckByTech = [];
+
+        // Lista de checkins do usuário
+        CheckByTech = allTechs.map(tech => {
+
+               // Filtra por tecnologia    
+               let filterCheckByTech = allCheckins.filter(techUser => techUser.tecnologia == tech.id);
+
+               // Devolve id da tecnologia, o nome e a quantidade de Check-ins
+               return {
+                   IdTech: tech.id,
+                   techName: tech.techname,
+                   CounterCheckin: filterCheckByTech.length
+               }
+
+        }).filter(f => f.CounterCheckin != 0);
+                
+        // Devolve lista de usuários com lista de tecnologia 
+        // de cada usuário e quantidade de check-ins                
+        return {
+
+            IdUser : id,
+            UserName: userData.nome,
+            Techs: CheckByTech
+
+        }
+
+    },
+
+
+    // consulta total de check-ins por tecnologia para um único usuário no dia
+    async techByUserToday (id) {
+
+        // dados do usuário
+        const userData = await UserService.index(id);
+
+        const dt = new Date();
+        const newDt = new Date(`${dt.getFullYear()}-${dt.getMonth() + 1}-${dt.getDate()}`) ; 
+
+        const  query = { 
+             usuario: id, 
+             data: newDt 
+        }; 
+
+        // consulta todos os checkins por usuário e data atual
+        const allCheckins = await this.byUser(query);
+
+        // consulta todas as tecnlogias
+        const allTechs = await TechService.all();
+
+        let CheckByTech = [];
+
+        // Lista de checkins do usuário
+        CheckByTech = allTechs.map(tech => {
+
+               // Filtra por tecnologia    
+               let filterCheckByTech = allCheckins.filter(techUser => techUser.tecnologia == tech.id);
+
+               // Devolve id da tecnologia, o nome e a quantidade de Check-ins
+               return {
+                   IdTech: tech.id,
+                   techName: tech.techname,
+                   CounterCheckin: filterCheckByTech.length
+               }
+
+        });
+                
+        // Devolve lista de usuários com lista de tecnologia 
+        // de cada usuário e quantidade de check-ins                
+        return {
+
+            IdUser : id,
+            UserName: userData.nome,
+            Techs: CheckByTech
+
+        }
+
+    },
+
+
+    // consulta total de check-ins por tecnologia para de todos usuário no dia
+    async techByUserToday () {
+
+        let techsUser = [];
+
+        // consulta todas os usuários cadastrados
+        const allUsers = await UserService.all();
+
+        const dt = new Date();
+        const newDt = new Date(`${dt.getFullYear()}-${dt.getMonth() + 1}-${dt.getDate()}`) ; 
+
+        // consulta todos os checkins
+        const allCheckins = await this.byUser({
+            data: newDt
+        });
+
+        // consulta todas as tecnlogias
+        const allTechs = await TechService.all();
+
+        // totaliza check-in por tecnologia para cada usuário
+        techsUser = allUsers.map( user => {
+
+            let IdUser = user.id;
+            let CheckByUser = [];
+            let CheckByTech = [];
+
+            // filtra os checkin para cada usuário
+            CheckByUser = allCheckins.filter(
+                checkin => checkin.usuario == IdUser
+            );
+
+            if(CheckByUser.length !=0){
+
+                // Lista de checkins de cada usuário
+                CheckByTech = allTechs.map(tech => {
+
+                // Filtra por tecnologia    
+                let filterCheckByTech = CheckByUser.filter(techUser => techUser.tecnologia == tech.id);
+ 
+                // Devolve id da tecnologia, o nome e a quantidade de Check-ins
+                return {
+                        IdTech: tech.id,
+                        techName: tech.techname,
+                        CounterCheckin: filterCheckByTech.length
+                    }
+ 
+                }).filter(tech => tech.CounterCheckin != 0);
+                 
+                // Devolve lista de usuários com lista de tecnologia 
+                // de cada usuário e quantidade de check-ins                
+                return {
+ 
+                    IdUser : IdUser,
+                    UserName: user.nome,
+                    Techs: CheckByTech
+ 
+                }
+
+            }
+     
+        }).filter(f => f != null);
+
+        return techsUser;
+
+    }
 
 }

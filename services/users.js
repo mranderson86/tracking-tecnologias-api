@@ -17,14 +17,21 @@ module.exports = {
         return user;
     },
 
-    async all() {
+    async all(id) {
 
-        const users =  await UserModel.find((err,res) => {
-            if(err){
-                console.log(err);
-            }
+        let users;
+
+        if(id != null) {
+            users =  await UserModel.find({ _id : id }).exec();    
+        }else {
+
+            users =  await UserModel.find((err,res) => {
+                if(err){
+                    console.log(err);
+                }
             
-        });
+            });
+        }
 
         return users;
 
